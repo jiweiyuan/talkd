@@ -86,24 +86,24 @@ jobs:
 
             **macOS (Apple Silicon)**
             ```bash
-            curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz
+            curl -sSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz
             sudo mv talkd /usr/local/bin/
             ```
 
             **macOS (Intel)**
             ```bash
-            curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-x86_64-apple-darwin.tar.gz | tar xz
+            curl -sSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-x86_64-apple-darwin.tar.gz | tar xz
             sudo mv talkd /usr/local/bin/
             ```
 
             **Linux (x86_64)**
             ```bash
-            curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-x86_64-unknown-linux-gnu.tar.gz | tar xz
+            curl -sSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-x86_64-unknown-linux-gnu.tar.gz | tar xz
             sudo mv talkd /usr/local/bin/
             ```
 
             **Linux (aarch64)**
             ```bash
-            curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-aarch64-unknown-linux-gnu.tar.gz | tar xz
+            curl -sSL https://github.com/${{ github.repository }}/releases/latest/download/talkd-aarch64-unknown-linux-gnu.tar.gz | tar xz
             sudo mv talkd /usr/local/bin/
             ```

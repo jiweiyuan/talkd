@@ -68,7 +68,7 @@ export function Hero() {
           href="https://github.com/jiweiyuan/talkd/releases/latest"
           className="text-green no-underline font-serif hover:underline"
         >
-          Download v0.3.0
+          Download v0.3.1
         </a>
         <a
           href="https://github.com/jiweiyuan/talkd/releases"
