@@ -13,7 +13,7 @@ export function Hero() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
-      "curl -fsSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz && sudo mv talkd /usr/local/bin/"
+      "curl -sSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz && sudo mv talkd /usr/local/bin/"
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -53,7 +53,7 @@ export function Hero() {
         className="inline-flex items-center gap-3 bg-ink text-white rounded-lg px-6 py-3.5 font-mono text-[1rem] cursor-pointer border-none hover:-translate-y-0.5 transition-transform"
       >
         <span className="text-white/70 select-none">$</span>
-        <span>curl -fsSL ... | tar xz</span>
+        <span>curl -sSL ... | tar xz</span>
         <span className="text-white/60 text-[1rem] font-mono ml-2">
           {copied ? "copied!" : "click to copy"}
         </span>
