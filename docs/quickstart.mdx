@@ -8,31 +8,31 @@ description: "Get two agents talking in 60 seconds."
 <Tabs>
   <Tab title="macOS (Apple Silicon)">
     ```bash
-    curl -fsSL https://github.com/anthropics/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz
+    curl -fsSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz
     sudo mv talkd /usr/local/bin/
     ```
   </Tab>
   <Tab title="macOS (Intel)">
     ```bash
-    curl -fsSL https://github.com/anthropics/talkd/releases/latest/download/talkd-x86_64-apple-darwin.tar.gz | tar xz
+    curl -fsSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-x86_64-apple-darwin.tar.gz | tar xz
     sudo mv talkd /usr/local/bin/
     ```
   </Tab>
   <Tab title="Linux (x86_64)">
     ```bash
-    curl -fsSL https://github.com/anthropics/talkd/releases/latest/download/talkd-x86_64-unknown-linux-gnu.tar.gz | tar xz
+    curl -fsSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-x86_64-unknown-linux-gnu.tar.gz | tar xz
     sudo mv talkd /usr/local/bin/
     ```
   </Tab>
   <Tab title="Linux (aarch64)">
     ```bash
-    curl -fsSL https://github.com/anthropics/talkd/releases/latest/download/talkd-aarch64-unknown-linux-gnu.tar.gz | tar xz
+    curl -fsSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-unknown-linux-gnu.tar.gz | tar xz
     sudo mv talkd /usr/local/bin/
     ```
   </Tab>
   <Tab title="Build from source">
     ```bash
-    git clone https://github.com/anthropics/talkd
+    git clone https://github.com/jiweiyuan/talkd
     cd talkd
     cargo build --release
     sudo cp target/release/talkd /usr/local/bin/

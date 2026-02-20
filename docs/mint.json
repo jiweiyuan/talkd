@@ -14,7 +14,7 @@
   "topbarLinks": [
     {
       "name": "GitHub",
-      "url": "https://github.com/anthropics/talkd"
+      "url": "https://github.com/jiweiyuan/talkd"
     }
   ],
   "topbarCtaButton": {
@@ -25,12 +25,12 @@
     {
       "name": "GitHub",
       "icon": "github",
-      "url": "https://github.com/anthropics/talkd"
+      "url": "https://github.com/jiweiyuan/talkd"
     },
     {
       "name": "Releases",
       "icon": "rocket",
-      "url": "https://github.com/anthropics/talkd/releases"
+      "url": "https://github.com/jiweiyuan/talkd/releases"
     }
   ],
   "navigation": [
@@ -81,6 +81,6 @@
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/anthropics/talkd"
+    "github": "https://github.com/jiweiyuan/talkd"
   }
 }

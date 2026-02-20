@@ -316,6 +316,7 @@ async fn handle_ipc(
                         let ticket = Ticket {
                             topic: ch.topic_id,
                             peers: vec![addr],
+                            channel: channel.clone(),
                         };
                         let encoded = data_encoding::BASE32_NOPAD
                             .encode(&postcard::to_stdvec(&ticket).unwrap());
@@ -336,10 +337,22 @@ async fn handle_ipc(
                 match decoded {
                     Ok(bytes) => match postcard::from_bytes::<Ticket>(&bytes) {
                         Ok(ticket_data) => {
+                            // Use channel name from ticket if user didn't specify one
+                            let ch_name = if channel.is_empty() && !ticket_data.channel.is_empty() {
+                                ticket_data.channel.clone()
+                            } else if channel.is_empty() {
+                                "default".to_string()
+                            } else {
+                                channel.clone()
+                            };
                             let mut d = daemon.lock().await;
-                            let resp = d
-                                .accept_ticket(&channel, &ticket_data, &client_id)
+                            let mut resp = d
+                                .accept_ticket(&ch_name, &ticket_data, &client_id)
                                 .await;
+                            // Return the resolved channel name so CLI can display it
+                            if resp.ok {
+                                resp.channel = Some(ch_name);
+                            }
                             reply(&mut writer, &resp).await?;
                         }
                         Err(e) => {
@@ -439,6 +452,8 @@ async fn reply(w: &mut tokio::net::unix::OwnedWriteHalf, resp: &Response) -> Res
 struct Ticket {
     topic: TopicId,
     peers: Vec<EndpointAddr>,
+    #[serde(default)]
+    channel: String,
 }
 
 // ── Wire message (over gossip) ──────────────────────────────────────

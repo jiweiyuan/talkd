@@ -45,8 +45,17 @@ enum Commands {
     /// List all contacts
     Contacts,
 
-    /// Join a channel
-    Join { channel: String },
+    /// Create a new channel (prints invite ticket)
+    Create {
+        /// Channel name
+        channel: String,
+    },
+
+    /// Join a channel via invite ticket
+    Join {
+        /// Invite ticket from `talkd create` or `talkd invite`
+        ticket: String,
+    },
 
     /// Send a message to a channel
     Send {
@@ -86,14 +95,7 @@ enum Commands {
     /// Generate an invite ticket for a channel
     Invite { channel: String },
 
-    /// Join a channel via invite ticket
-    Accept {
-        /// The invite ticket string
-        ticket: String,
-        /// Local channel name
-        #[arg(short, long, default_value = "default")]
-        channel: String,
-    },
+
 
     /// List peers in a channel (shows full IDs for adding contacts)
     Peers { channel: String },
@@ -123,7 +125,8 @@ async fn main() {
         Commands::Id => cmd_id(json).await,
         Commands::Add { name, address, note } => cmd_add(name, address, note, json),
         Commands::Contacts => cmd_contacts(json),
-        Commands::Join { channel } => cmd_join(channel, json).await,
+        Commands::Create { channel } => cmd_create(channel, json).await,
+        Commands::Join { ticket } => cmd_join(ticket, json).await,
         Commands::Send { channel, message, file } => cmd_send(channel, message, file, json).await,
         Commands::Dm { target, message, file } => cmd_dm(target, message, file, json).await,
         Commands::Read {
@@ -133,7 +136,6 @@ async fn main() {
         } => cmd_read(channel, wait, timeout, json).await,
         Commands::Listen { channel } => cmd_listen(channel, json).await,
         Commands::Invite { channel } => cmd_invite(channel, json).await,
-        Commands::Accept { ticket, channel } => cmd_accept(ticket, channel, json).await,
         Commands::Peers { channel } => cmd_peers(channel, json).await,
         Commands::Status => cmd_status(json).await,
         Commands::Leave { channel } => cmd_leave(channel, json).await,
@@ -239,10 +241,45 @@ fn read_message_text(message: Option<String>) -> anyhow::Result<String> {
     }
 }
 
-async fn cmd_join(channel: String, json: bool) -> anyhow::Result<()> {
-    let resp = client::request(
+async fn cmd_create(channel: String, json: bool) -> anyhow::Result<()> {
+    // 1. Join the channel locally
+    let join_resp = client::request(
         Command::Join {
             channel: channel.clone(),
+            client_id: crypto::client_id(),
+        },
+        30_000,
+    )
+    .await?;
+    if !join_resp.ok {
+        if json {
+            println!("{}", serde_json::to_string(&join_resp)?);
+        } else {
+            eprintln!("Error: {}", join_resp.error.unwrap_or_default());
+        }
+        std::process::exit(1);
+    }
+
+    // 2. Generate invite ticket
+    let invite_resp = client::request(Command::Invite { channel: channel.clone() }, 10_000).await?;
+    if json {
+        println!("{}", serde_json::to_string(&invite_resp)?);
+    } else if invite_resp.ok {
+        let ticket = invite_resp.ticket.unwrap_or_default();
+        println!("Created channel \"{}\"", channel);
+        println!("Invite ticket:\n{}", ticket);
+    } else {
+        eprintln!("Error: {}", invite_resp.error.unwrap_or_default());
+        std::process::exit(1);
+    }
+    Ok(())
+}
+
+async fn cmd_join(ticket: String, json: bool) -> anyhow::Result<()> {
+    let resp = client::request(
+        Command::Accept {
+            ticket,
+            channel: String::new(),
             client_id: crypto::client_id(),
         },
         30_000,
@@ -251,7 +288,8 @@ async fn cmd_join(channel: String, json: bool) -> anyhow::Result<()> {
     if json {
         println!("{}", serde_json::to_string(&resp)?);
     } else if resp.ok {
-        println!("Joined channel \"{}\"", channel);
+        let ch = resp.channel.unwrap_or_else(|| "default".to_string());
+        println!("Joined channel \"{}\"", ch);
     } else {
         eprintln!("Error: {}", resp.error.unwrap_or_default());
         std::process::exit(1);
@@ -454,26 +492,6 @@ async fn cmd_invite(channel: String, json: bool) -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn cmd_accept(ticket: String, channel: String, json: bool) -> anyhow::Result<()> {
-    let resp = client::request(
-        Command::Accept {
-            ticket,
-            channel: channel.clone(),
-            client_id: crypto::client_id(),
-        },
-        30_000,
-    )
-    .await?;
-    if json {
-        println!("{}", serde_json::to_string(&resp)?);
-    } else if resp.ok {
-        println!("Joined channel \"{}\" via ticket", channel);
-    } else {
-        eprintln!("Error: {}", resp.error.unwrap_or_default());
-        std::process::exit(1);
-    }
-    Ok(())
-}
 
 async fn cmd_id(json: bool) -> anyhow::Result<()> {
     // Try daemon first (it knows the live ID)

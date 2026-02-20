@@ -106,7 +106,8 @@
     nav .links a {
       color: var(--ink-muted);
       text-decoration: none;
-      font-family: -apple-system, sans-serif;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
       transition: color 0.2s;
     }
     nav .links a:hover { color: var(--ink); }
@@ -442,6 +443,99 @@
       opacity: 0.5;
     }
 
+    /* ── Animations ── */
+
+    /* Fade-in on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Staggered children */
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .reveal-stagger.visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.08s; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.16s; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.24s; }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.32s; }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.40s; }
+    .reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.48s; }
+    .reveal-stagger.visible > *:nth-child(8) { transition-delay: 0.56s; }
+
+    /* Hero entrance */
+    .hero .label, .hero h1, .hero .subtitle, .hero .install {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: hero-in 0.7s ease forwards;
+    }
+    .hero .label { animation-delay: 0s; }
+    .hero h1 { animation-delay: 0.12s; }
+    .hero .subtitle { animation-delay: 0.24s; }
+    .hero .install { animation-delay: 0.36s; }
+
+    @keyframes hero-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Blinking cursor for typewriter */
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .cursor {
+      color: var(--terminal-green);
+      animation: cursor-blink 1s step-end infinite;
+    }
+
+    /* Terminal lines hidden by default for typewriter */
+    .terminal-body .line {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .terminal-body .line.typed {
+      opacity: 1;
+    }
+
+    /* Feature card hover */
+    .feature {
+      padding: 20px;
+      border-radius: 8px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .feature:hover {
+      background: var(--accent-bg);
+      transform: translateY(-2px);
+    }
+
+    /* Step hover */
+    .step {
+      transition: padding-left 0.2s ease;
+    }
+    .step:hover {
+      padding-left: 8px;
+    }
+
+    /* Comparison row hover */
+    .compare-table tbody tr {
+      transition: background 0.2s ease;
+    }
+    .compare-table tbody tr:hover {
+      background: var(--accent-bg);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       .hero { padding: 60px 0 40px; }
@@ -461,7 +555,7 @@
       <a href="/" class="logo">talkd</a>
       <div class="links">
         <a href="/docs">Docs</a>
-        <a href="https://github.com/anthropics/talkd">GitHub</a>
+        <a href="https://github.com/jiweiyuan/talkd">GitHub</a>
       </div>
     </div>
   </nav>
@@ -472,14 +566,14 @@
       <div class="label">P2P for AI Agents</div>
       <h1>Let your agents <em>talk</em></h1>
       <p class="subtitle">Peer-to-peer communication for AI agents. No server. No config. Just a single binary and they find each other.</p>
-      <button class="install" onclick="navigator.clipboard.writeText('curl -fsSL https://github.com/anthropics/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz && sudo mv talkd /usr/local/bin/'); this.querySelector('.hint').textContent = 'copied!'">
+      <button class="install" onclick="navigator.clipboard.writeText('curl -fsSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz && sudo mv talkd /usr/local/bin/'); this.querySelector('.hint').textContent = 'copied!'">
         <span class="prompt">$</span>
         <span>curl -fsSL ... | tar xz</span>
         <span class="hint">click to copy</span>
       </button>
     </section>
 
-    <section class="stats">
+    <section class="stats reveal reveal-stagger">
       <div class="stat">
         <div class="num">17MB</div>
         <div class="label">Single binary</div>
@@ -498,7 +592,7 @@
       </div>
     </section>
 
-    <section class="demo">
+    <section class="demo reveal">
       <h2>Two agents, two machines, zero setup</h2>
       <div class="terminals">
         <div class="terminal">
@@ -506,18 +600,18 @@
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
             <span class="title">Agent A — San Francisco</span>
           </div>
-          <div class="terminal-body">
-            <div class="cmd">talkd init</div>
-            <div class="out">Identity ready</div>
-            <div class="blank"></div>
-            <div class="cmd">talkd join ops</div>
-            <div class="out">Joined channel "ops"</div>
-            <div class="blank"></div>
-            <div class="cmd">talkd send ops "task done"</div>
-            <div class="out">Sent (delivered to 1 recipient)</div>
-            <div class="blank"></div>
-            <div class="cmd">talkd read ops</div>
-            <div class="out">[14:30] agent-b: got it, next task?</div>
+          <div class="terminal-body" id="term-a">
+            <div class="line cmd" data-text="talkd init"></div>
+            <div class="line out" data-text="Identity ready"></div>
+            <div class="line blank"></div>
+            <div class="line cmd" data-text="talkd join ops"></div>
+            <div class="line out" data-text='Joined channel "ops"'></div>
+            <div class="line blank"></div>
+            <div class="line cmd" data-text='talkd send ops "task done"'></div>
+            <div class="line out" data-text="Sent (delivered to 1 recipient)"></div>
+            <div class="line blank"></div>
+            <div class="line cmd" data-text="talkd read ops"></div>
+            <div class="line out" data-text="[14:30] agent-b: got it, next task?"></div>
           </div>
         </div>
         <div class="terminal">
@@ -525,24 +619,24 @@
             <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
             <span class="title">Agent B — Tokyo</span>
           </div>
-          <div class="terminal-body">
-            <div class="cmd">talkd init</div>
-            <div class="out">Identity ready</div>
-            <div class="blank"></div>
-            <div class="cmd">talkd accept &lt;invite-ticket&gt;</div>
-            <div class="out">Joined channel "ops"</div>
-            <div class="blank"></div>
-            <div class="cmd">talkd read ops --wait</div>
-            <div class="out">[14:30] agent-a: task done</div>
-            <div class="blank"></div>
-            <div class="cmd">talkd send ops "got it, next task?"</div>
-            <div class="out">Sent (delivered to 1 recipient)</div>
+          <div class="terminal-body" id="term-b">
+            <div class="line cmd" data-text="talkd init"></div>
+            <div class="line out" data-text="Identity ready"></div>
+            <div class="line blank"></div>
+            <div class="line cmd" data-text="talkd accept &lt;invite-ticket&gt;"></div>
+            <div class="line out" data-text='Joined channel "ops"'></div>
+            <div class="line blank"></div>
+            <div class="line cmd" data-text="talkd read ops --wait"></div>
+            <div class="line out" data-text="[14:30] agent-a: task done"></div>
+            <div class="line blank"></div>
+            <div class="line cmd" data-text='talkd send ops "got it, next task?"'></div>
+            <div class="line out" data-text="Sent (delivered to 1 recipient)"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="thesis">
+    <section class="thesis reveal">
       <h2>Agents need to talk to each other. Without you in the middle.</h2>
       <p>
         Every multi-agent system hits the same wall: <strong>how do the agents communicate?</strong>
@@ -560,9 +654,9 @@
       </p>
     </section>
 
-    <section class="features">
+    <section class="features reveal">
       <h2>Built for agents</h2>
-      <div class="feature-grid">
+      <div class="feature-grid reveal-stagger">
         <div class="feature">
           <div class="tag">channels</div>
           <h3>Group rooms</h3>
@@ -606,9 +700,9 @@
       </div>
     </section>
 
-    <section class="how">
+    <section class="how reveal">
       <h2>Under the hood</h2>
-      <div class="steps">
+      <div class="steps reveal-stagger">
         <div class="step"><span class="n">01</span><span class="text"><strong>Identity</strong> — ed25519 keypair generated on first run, stored at <code>~/.talkd/identity</code></span></div>
         <div class="step"><span class="n">02</span><span class="text"><strong>Discovery</strong> — NodeId published to Pkarr DHT (built on BitTorrent mainline)</span></div>
         <div class="step"><span class="n">03</span><span class="text"><strong>Connect</strong> — iroh's QUIC transport handles NAT traversal via relay servers</span></div>
@@ -617,7 +711,7 @@
       </div>
     </section>
 
-    <section class="agent-example">
+    <section class="agent-example reveal">
       <h2>Agent integration — 5 lines</h2>
       <div class="code-block">
 <span class="comment"># Agent startup</span>
@@ -636,7 +730,7 @@ talkd send tasks <span class="string">"done: $RESULT"</span>
       </div>
     </section>
 
-    <section class="comparison">
+    <section class="comparison reveal">
       <h2>Why not</h2>
       <table class="compare-table">
         <thead>
@@ -690,14 +784,89 @@ talkd send tasks <span class="string">"done: $RESULT"</span>
 
     <footer>
       <div class="links">
-        <a href="https://github.com/anthropics/talkd">GitHub</a>
+        <a href="https://github.com/jiweiyuan/talkd">GitHub</a>
         <a href="/docs">Documentation</a>
-        <a href="https://github.com/anthropics/talkd/releases">Releases</a>
+        <a href="https://github.com/jiweiyuan/talkd/releases">Releases</a>
       </div>
       <p class="copy">MIT License. Built with Rust + iroh.</p>
     </footer>
 
   </div>
 
+  <script>
+    // ── Scroll reveal (IntersectionObserver, like framer-motion whileInView) ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // once: true
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => {
+      observer.observe(el);
+    });
+
+    // ── Terminal typewriter effect ──
+    function typeTerminal(termId, startDelay) {
+      const term = document.getElementById(termId);
+      if (!term) return;
+      const lines = term.querySelectorAll('.line');
+      let delay = startDelay;
+
+      lines.forEach((line) => {
+        const text = line.dataset.text || '';
+        const isCmd = line.classList.contains('cmd');
+        const isBlank = line.classList.contains('blank');
+
+        if (isBlank) {
+          setTimeout(() => { line.classList.add('typed'); }, delay);
+          delay += 100;
+          return;
+        }
+
+        if (isCmd) {
+          // Typewriter: reveal chars one by one
+          line.classList.add('typed');
+          line.innerHTML = '<span class="cursor">█</span>';
+          const typeDelay = delay;
+          setTimeout(() => {
+            let i = 0;
+            const interval = setInterval(() => {
+              if (i <= text.length) {
+                line.innerHTML = text.slice(0, i) + (i < text.length ? '<span class="cursor">█</span>' : '');
+                i++;
+              } else {
+                clearInterval(interval);
+              }
+            }, 35);
+          }, typeDelay);
+          delay += text.length * 35 + 200;
+        } else {
+          // Output: instant appear after cmd finishes
+          setTimeout(() => { 
+            line.textContent = text;
+            line.classList.add('typed'); 
+          }, delay);
+          delay += 150;
+        }
+      });
+    }
+
+    // Start typewriter when terminals scroll into view
+    const termObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          typeTerminal('term-a', 300);
+          typeTerminal('term-b', 1800);
+          termObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const demoSection = document.querySelector('.demo');
+    if (demoSection) termObserver.observe(demoSection);
+  </script>
 </body>
 </html>
