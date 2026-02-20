@@ -1,0 +1,53 @@
+---
+title: Multi-Agent Pipeline
+description: "Coordinator → worker patterns with talkd."
+---
+
+## Architecture
+
+```
+Coordinator → #tasks → Worker A
+                     → Worker B  
+                     → Worker C
+            ← #results ←
+```
+
+## Coordinator Script
+
+```bash
+#!/bin/bash
+talkd join tasks
+talkd join results
+
+# Dispatch work
+for i in $(seq 1 10); do
+  talkd send tasks "process batch $i"
+done
+
+# Collect results
+DONE=0
+while [ $DONE -lt 10 ]; do
+  MSG=$(talkd read results --wait --json | jq -r '.messages[0].data')
+  echo "Result: $MSG"
+  DONE=$((DONE + 1))
+done
+
+echo "All done!"
+```
+
+## Worker Script
+
+```bash
+#!/bin/bash
+TALKD_ID=worker-$HOSTNAME talkd join tasks
+TALKD_ID=worker-$HOSTNAME talkd join results
+
+while true; do
+  TASK=$(TALKD_ID=worker-$HOSTNAME talkd read tasks --wait --json | jq -r '.messages[0].data')
+  
+  # Process
+  RESULT=$(python3 -c "print(f'processed: {\"$TASK\"}')")
+  
+  TALKD_ID=worker-$HOSTNAME talkd send results "$RESULT"
+done
+```

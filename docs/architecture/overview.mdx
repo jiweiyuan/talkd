@@ -1,0 +1,59 @@
+---
+title: Architecture Overview
+description: "How talkd works under the hood."
+---
+
+## Components
+
+```
+┌─────────────────────────────────────────────┐
+│  talkd CLI                                   │
+│  (main.rs — parses commands, formats output) │
+└─────────────┬───────────────────────────────┘
+              │ Unix socket IPC
+┌─────────────▼───────────────────────────────┐
+│  talkd daemon                                │
+│  (daemon.rs — background process)            │
+│                                              │
+│  ┌─────────┐  ┌──────────┐  ┌────────────┐  │
+│  │  iroh    │  │  gossip  │  │   store    │  │
+│  │ endpoint │  │  pub/sub │  │  (JSON)    │  │
+│  └─────────┘  └──────────┘  └────────────┘  │
+└──────────────────────────────────────────────┘
+```
+
+## Files
+
+| File | Lines | Purpose |
+|---|---|---|
+| `src/main.rs` | ~620 | CLI (clap), command dispatch, formatting |
+| `src/daemon.rs` | ~790 | Background daemon, iroh endpoint, gossip, IPC handler |
+| `src/store.rs` | ~270 | JSON file persistence, cursor management |
+| `src/protocol.rs` | ~190 | IPC command/response types, wire messages |
+| `src/client.rs` | ~150 | IPC client, daemon auto-start |
+| `src/crypto.rs` | ~95 | Identity, contacts, topic derivation, ECDH |
+
+## Message Flow
+
+### Send
+
+1. CLI sends `Command::Send` via IPC to daemon
+2. Daemon serializes `WireMessage` (sender, data, timestamp, optional file)
+3. `gossip.broadcast()` sends to all connected peers
+4. `store.push_message()` persists to `~/.talkd/channels/ch-<name>.json`
+5. `notify.notify_one()` wakes any waiting `--wait` readers
+
+### Receive (remote)
+
+1. Gossip receive loop gets `Event::Received`
+2. Deserialize `WireMessage`
+3. If file attached: decode base64, save to `~/.talkd/attachments/`
+4. `store.push_message()` persists
+5. `notify.notify_waiters()` wakes waiting readers
+
+### Read
+
+1. CLI sends `Command::Read` via IPC
+2. Daemon calls `store.read_messages(channel, subscriber_id)`
+3. Store reads from cursor position to end, advances cursor
+4. If `--wait` and no messages: loop { check disk → wait for notify → check disk }

@@ -1,0 +1,51 @@
+---
+title: Introduction
+description: "P2P communication for AI agents. No server. No setup. Just talk."
+---
+
+# What is talkd?
+
+**talkd** is a peer-to-peer communication CLI for AI agents. It lets agents on different machines send messages, share files, and coordinate work — without any server infrastructure.
+
+```bash
+# Agent A                          # Agent B
+talkd join project                 talkd accept <ticket>
+talkd send project "analyze this"  talkd read project --wait --json
+                                   # → {"messages":[{"from":"agent-a","data":"analyze this",...}]}
+```
+
+## Why talkd?
+
+Every multi-agent system hits the same problem: **how do agents talk to each other?**
+
+| Approach | Problem |
+|---|---|
+| HTTP webhooks | Need a server, public IP, port forwarding |
+| Redis/RabbitMQ | Need infrastructure to deploy and maintain |
+| Shared database | Need a server, credentials, network access |
+| **talkd** | **Just install the binary. Done.** |
+
+## Key Design Decisions
+
+<CardGroup cols={2}>
+  <Card title="Single binary" icon="box">
+    17MB Rust binary. No runtime, no dependencies. `curl | tar` and you're done.
+  </Card>
+  <Card title="P2P encrypted" icon="lock">
+    Built on iroh (QUIC + NAT traversal). E2E encrypted. No server sees your messages.
+  </Card>
+  <Card title="Agent-first" icon="robot">
+    `--json` on every command. `--wait` for blocking reads. Stdin pipe support. Built for scripts.
+  </Card>
+  <Card title="Persistent" icon="database">
+    Messages saved to disk as JSON. Cursor-based reads. Survives daemon restarts.
+  </Card>
+</CardGroup>
+
+## How It Works
+
+1. **Identity** — Each agent gets an ed25519 keypair (`~/.talkd/identity`). Your ID is your public key.
+2. **Discovery** — IDs are published to the Pkarr DHT (BitTorrent mainline). Agents find each other by ID.
+3. **Connect** — iroh handles QUIC connections with automatic NAT traversal via relay servers.
+4. **Gossip** — Messages broadcast via iroh-gossip pub/sub to all channel peers.
+5. **Persist** — Messages saved as JSON files with per-subscriber cursors. No duplicates.

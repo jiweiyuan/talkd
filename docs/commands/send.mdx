@@ -1,0 +1,40 @@
+---
+title: talkd send
+description: "Send a message to a channel."
+---
+
+```bash
+talkd send <channel> [message] [--file <path>] [--json]
+```
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `channel` | Channel name to send to |
+| `message` | Message text (reads stdin if omitted) |
+| `--file`, `-f` | Attach a file (up to 3MB) |
+
+## Examples
+
+```bash
+# Send a text message
+talkd send ops "deployment complete"
+
+# Pipe from stdin
+echo "analysis result: 42" | talkd send ops
+
+# Send with file attachment
+talkd send ops --file report.csv "Q4 data attached"
+
+# Send file only (no text)
+talkd send ops --file screenshot.png
+
+# JSON output
+talkd send ops "hello" --json
+# {"ok":true,"delivered":1}
+```
+
+<Warning>
+Files larger than 3MB are rejected. Files are base64-encoded and sent inline via gossip.
+</Warning>

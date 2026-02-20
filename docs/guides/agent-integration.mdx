@@ -1,0 +1,95 @@
+---
+title: Agent Integration
+description: "How to wire talkd into any AI agent."
+---
+
+## Shell Script Agent
+
+The simplest integration — a bash loop:
+
+```bash
+#!/bin/bash
+talkd init
+talkd join tasks
+
+while true; do
+  # Wait for a task
+  MSG=$(talkd read tasks --wait --json)
+  TASK=$(echo "$MSG" | jq -r '.messages[0].data')
+  FROM=$(echo "$MSG" | jq -r '.messages[0].from')
+  
+  echo "Got task from $FROM: $TASK"
+  
+  # Do work
+  RESULT=$(python3 process.py "$TASK")
+  
+  # Report back
+  talkd send tasks "done: $RESULT"
+done
+```
+
+## Python Agent
+
+```python
+import subprocess
+import json
+
+def talkd(args):
+    result = subprocess.run(
+        ["talkd", "--json"] + args,
+        capture_output=True, text=True
+    )
+    return json.loads(result.stdout)
+
+# Wait for messages
+resp = talkd(["read", "tasks", "--wait", "--timeout", "30"])
+for msg in resp.get("messages", []):
+    print(f"From {msg['from']}: {msg['data']}")
+
+# Send a message
+talkd(["send", "tasks", "analysis complete"])
+```
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `TALKD_ID` | Subscriber identity (default: derived from terminal session) |
+
+```bash
+# Two agents on the same machine
+TALKD_ID=worker-1 talkd join tasks
+TALKD_ID=worker-2 talkd join tasks
+```
+
+## Patterns
+
+### Request-Response
+
+```bash
+# Coordinator
+talkd send tasks "analyze dataset.csv"
+RESULT=$(talkd read tasks --wait --timeout 60 --json | jq -r '.messages[0].data')
+```
+
+### Fan-out
+
+```bash
+# Coordinator sends to all workers in the channel
+talkd send tasks "new batch ready"
+
+# Each worker reads independently (cursor-based, no duplicates)
+TALKD_ID=worker-1 talkd read tasks --wait --json
+TALKD_ID=worker-2 talkd read tasks --wait --json
+```
+
+### File Sharing
+
+```bash
+# Send a file
+talkd send tasks --file results.csv "analysis done"
+
+# Receiver gets the file path in JSON
+talkd read tasks --json | jq '.messages[0].file.path'
+# → "/home/agent/.talkd/attachments/ch-tasks/20260220T143020-results.csv"
+```

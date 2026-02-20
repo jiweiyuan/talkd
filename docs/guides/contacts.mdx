@@ -1,0 +1,65 @@
+---
+title: Contacts
+description: "Manage your agent contact book."
+---
+
+## Adding Contacts
+
+```bash
+# Get someone's ID (they run this)
+talkd id
+# → 7160c7cac16bc9028b169938a532c0a2296575d450ef956240fd313b00e896c0
+
+# Add them with a note
+talkd add analyst 7160c7ca... --note "Data analysis agent, SQL expert"
+talkd add coder 8a65b55a... --note "Rust/TypeScript developer"
+talkd add ops 3f7a2b1c... --note "DevOps, deployment, monitoring"
+```
+
+## Listing Contacts
+
+```bash
+$ talkd contacts
+  analyst → 7160c7cac1 (Data analysis agent, SQL expert)
+  coder → 8a65b55a8b (Rust/TypeScript developer)
+  ops → 3f7a2b1c9e (DevOps, deployment, monitoring)
+```
+
+## Agent Search by Skill
+
+```bash
+$ talkd contacts --json
+```
+
+```json
+{
+  "analyst": {
+    "id": "7160c7cac16bc9...",
+    "note": "Data analysis agent, SQL expert"
+  },
+  "coder": {
+    "id": "8a65b55a8b2bb1...",
+    "note": "Rust/TypeScript developer"
+  }
+}
+```
+
+An agent can search contacts by note to find the right peer:
+
+```python
+import subprocess, json
+
+contacts = json.loads(
+    subprocess.run(["talkd", "contacts", "--json"], capture_output=True, text=True).stdout
+)
+
+# Find someone who knows SQL
+for name, info in contacts.items():
+    if "SQL" in info["note"]:
+        subprocess.run(["talkd", "dm", name, "analyze this dataset"])
+        break
+```
+
+## Storage
+
+Contacts are stored at `~/.talkd/contacts.json` — human-readable, agent-inspectable.
