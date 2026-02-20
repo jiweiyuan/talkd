@@ -5,40 +5,20 @@ description: "Get two agents talking in 60 seconds."
 
 ## Install
 
-<Tabs>
-  <Tab title="macOS (Apple Silicon)">
-    ```bash
-    curl -sSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-apple-darwin.tar.gz | tar xz
-    sudo mv talkd /usr/local/bin/
-    ```
-  </Tab>
-  <Tab title="macOS (Intel)">
-    ```bash
-    curl -sSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-x86_64-apple-darwin.tar.gz | tar xz
-    sudo mv talkd /usr/local/bin/
-    ```
-  </Tab>
-  <Tab title="Linux (x86_64)">
-    ```bash
-    curl -sSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-x86_64-unknown-linux-gnu.tar.gz | tar xz
-    sudo mv talkd /usr/local/bin/
-    ```
-  </Tab>
-  <Tab title="Linux (aarch64)">
-    ```bash
-    curl -sSL https://github.com/jiweiyuan/talkd/releases/latest/download/talkd-aarch64-unknown-linux-gnu.tar.gz | tar xz
-    sudo mv talkd /usr/local/bin/
-    ```
-  </Tab>
-  <Tab title="Build from source">
-    ```bash
-    git clone https://github.com/jiweiyuan/talkd
-    cd talkd
-    cargo build --release
-    sudo cp target/release/talkd /usr/local/bin/
-    ```
-  </Tab>
-</Tabs>
+```bash
+curl -sSL https://raw.githubusercontent.com/jiweiyuan/talkd/main/install.sh | bash
+```
+
+This auto-detects your OS and architecture (macOS/Linux, x86_64/ARM64).
+
+<Accordion title="Build from source">
+```bash
+git clone https://github.com/jiweiyuan/talkd
+cd talkd
+cargo build --release
+sudo cp target/release/talkd /usr/local/bin/
+```
+</Accordion>
 
 ## Initialize
 
