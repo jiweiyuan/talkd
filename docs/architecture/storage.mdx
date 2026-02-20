@@ -1,0 +1,67 @@
+---
+title: Storage
+description: "JSON files, cursors, and disk layout."
+---
+
+## Disk Layout
+
+```
+~/.talkd/
+  identity                          # ed25519 secret key (32 bytes)
+  contacts.json                     # {name: {id, note}}
+  daemon.pid                        # daemon process ID
+  daemon.log                        # daemon stderr log
+  channels/
+    ch-design.json                  # channel messages + cursors
+    ch-ops.json
+    dm-a1b2c3.json                  # DM messages + cursors
+  attachments/
+    ch-design/
+      20260220T143015-report.csv    # received files
+    dm-a1b2c3/
+      20260220T150000-data.json
+```
+
+## Channel JSON Format
+
+```json
+{
+  "messages": [
+    {
+      "from": "alice",
+      "data": "hello team",
+      "ts": "2026-02-20T14:30:15.123Z",
+      "delivered": true
+    },
+    {
+      "from": "bob",
+      "data": "Q4 report",
+      "ts": "2026-02-20T14:30:20.456Z",
+      "delivered": true,
+      "file": {
+        "name": "report.csv",
+        "size": 1234,
+        "path": "/home/agent/.talkd/attachments/ch-ops/20260220T143020-report.csv"
+      }
+    }
+  ],
+  "cursors": {
+    "alice": 2,
+    "bob": 1
+  }
+}
+```
+
+## Cursor Semantics
+
+- Each subscriber has an independent cursor (integer index)
+- `read` returns messages from cursor to end, then advances cursor
+- New subscribers start at cursor 0 (see full history)
+- Cursors persist across daemon restarts
+
+## Why JSON, Not SQLite?
+
+- **Zero dependencies** — no C library to link
+- **Human-readable** — agents and humans can inspect directly
+- **Simple** — append to array, write file. No schema migrations
+- **Sufficient** — for typical agent message volumes (<1K), performance is fine

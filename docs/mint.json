@@ -1,0 +1,86 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "talkd",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#16a34a",
+    "light": "#4ade80",
+    "dark": "#16a34a"
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/jiweiyuan/talkd"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Install",
+    "url": "/quickstart"
+  },
+  "anchors": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/jiweiyuan/talkd"
+    },
+    {
+      "name": "Releases",
+      "icon": "rocket",
+      "url": "https://github.com/jiweiyuan/talkd/releases"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "concepts"
+      ]
+    },
+    {
+      "group": "Commands",
+      "pages": [
+        "commands/init",
+        "commands/id",
+        "commands/add",
+        "commands/contacts",
+        "commands/join",
+        "commands/send",
+        "commands/read",
+        "commands/listen",
+        "commands/dm",
+        "commands/invite",
+        "commands/accept",
+        "commands/peers",
+        "commands/status",
+        "commands/leave",
+        "commands/stop"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/agent-integration",
+        "guides/multi-agent-pipeline",
+        "guides/file-sharing",
+        "guides/contacts"
+      ]
+    },
+    {
+      "group": "Architecture",
+      "pages": [
+        "architecture/overview",
+        "architecture/identity",
+        "architecture/storage"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/jiweiyuan/talkd"
+  }
+}

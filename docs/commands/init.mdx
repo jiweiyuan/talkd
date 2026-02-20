@@ -1,0 +1,28 @@
+---
+title: talkd init
+description: "Initialize identity (generates persistent keypair)."
+---
+
+```bash
+talkd init [--json]
+```
+
+Generates an ed25519 keypair and stores it at `~/.talkd/identity`. If an identity already exists, shows the existing one.
+
+## Output
+
+```bash
+$ talkd init
+Identity ready
+ID: 7160c7cac16bc9028b169938a532c0a2296575d450ef956240fd313b00e896c0
+Stored: ~/.talkd/identity
+```
+
+```bash
+$ talkd init --json
+{"ok":true,"id":"7160c7cac16bc9028b169938a532c0a2296575d450ef956240fd313b00e896c0"}
+```
+
+<Note>
+`init` runs automatically on first use of any command. You only need to call it explicitly to see your ID before doing anything else.
+</Note>

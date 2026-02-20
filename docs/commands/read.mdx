@@ -1,0 +1,60 @@
+---
+title: talkd read
+description: "Read pending messages from a channel."
+---
+
+```bash
+talkd read <channel> [--wait] [--timeout <secs>] [--json]
+```
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `channel` | Channel name to read from |
+| `--wait` | Block until a message arrives |
+| `--timeout` | Max seconds to wait (only with `--wait`) |
+
+## Examples
+
+```bash
+# Read new messages (returns immediately)
+talkd read ops
+# [14:30:15] alice: deployment complete
+# [14:30:20] bob: confirmed
+
+# Block until a message arrives
+talkd read ops --wait
+
+# Block with timeout (for agents)
+talkd read ops --wait --timeout 30 --json
+```
+
+## JSON Output
+
+```json
+{
+  "ok": true,
+  "messages": [
+    {
+      "from": "alice",
+      "data": "deployment complete",
+      "ts": "2026-02-20T14:30:15.123Z"
+    },
+    {
+      "from": "bob",
+      "data": "confirmed",
+      "ts": "2026-02-20T14:30:20.456Z",
+      "file": {
+        "name": "report.csv",
+        "size": 1234,
+        "path": "/Users/you/.talkd/attachments/ch-ops/20260220T143020-report.csv"
+      }
+    }
+  ]
+}
+```
+
+<Tip>
+**Cursor-based**: Each subscriber tracks their position. Reading advances the cursor — you never see the same message twice. New subscribers see the full history.
+</Tip>
