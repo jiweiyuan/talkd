@@ -672,13 +672,14 @@ impl Daemon {
         };
 
         let ts = now_iso();
+        let my_short_id = self.secret_key.public().fmt_short().to_string();
         let wire_file = file.map(|f| WireFile {
             name: f.name.clone(),
             size: f.size,
             data: f.data.clone(),
         });
         let wire = serde_json::to_vec(&WireMessage {
-            from: sender_id.to_string(),
+            from: my_short_id.clone(),
             data: message.to_string(),
             ts: ts.clone(),
             file: wire_file,
@@ -695,12 +696,12 @@ impl Daemon {
         // Persist — save file to ~/.talkd/files/<channel>/ (same for sender and receiver)
         if let Some(f) = file {
             if let Err(e) = self.store.push_message_with_inline_file(
-                channel, sender_id, message, ts, broadcast_ok,
+                channel, &my_short_id, message, ts, broadcast_ok,
                 &f.name, &f.data,
             ) {
                 warn!("Store error: {}", e);
             }
-        } else if let Err(e) = self.store.push_message(channel, sender_id, message, ts, broadcast_ok) {
+        } else if let Err(e) = self.store.push_message(channel, &my_short_id, message, ts, broadcast_ok) {
             warn!("Store error: {}", e);
         }
 

@@ -11,7 +11,7 @@ use std::io::Read;
 #[derive(Parser)]
 #[command(
     name = "talkd",
-    version = "0.3.0",
+    version = "0.3.2",
     about = "P2P communication for AI agents. No server. No setup. Just talk."
 )]
 struct Cli {
@@ -227,6 +227,18 @@ fn cmd_contacts(json: bool) -> anyhow::Result<()> {
 
 // ── Daemon commands ─────────────────────────────────────────────────
 
+/// Resolve dm:<contact_name> → dm:<short_id> so users can `talkd read dm:bob`.
+fn resolve_dm_channel(channel: &str) -> String {
+    if let Some(name) = channel.strip_prefix("dm:") {
+        let dir = daemon::talkd_dir();
+        let contacts = crypto::load_contacts(&dir);
+        if let Some(contact) = contacts.get(name) {
+            return format!("dm:{}", contact.id.fmt_short());
+        }
+    }
+    channel.to_string()
+}
+
 fn read_message_text(message: Option<String>) -> anyhow::Result<String> {
     match message {
         Some(m) => Ok(m),
@@ -406,6 +418,8 @@ async fn cmd_read(
     timeout: Option<u64>,
     json: bool,
 ) -> anyhow::Result<()> {
+    // Resolve dm:<contact_name> → dm:<short_id>
+    let channel = resolve_dm_channel(&channel);
     let ipc_timeout = if wait {
         match timeout {
             Some(t) => (t + 5) * 1000,
@@ -443,6 +457,7 @@ async fn cmd_read(
 }
 
 async fn cmd_listen(channel: String, json: bool) -> anyhow::Result<()> {
+    let channel = resolve_dm_channel(&channel);
     loop {
         let resp = client::request(
             Command::Read {
@@ -672,16 +687,38 @@ fn print_message(msg: &protocol::Message) {
         .map(|dt| dt.with_timezone(&chrono::Local).format("%H:%M:%S").to_string())
         .unwrap_or_else(|_| msg.ts.clone());
 
+    // Resolve short ID to contact name, or show "you" for own messages
+    let from = resolve_sender(&msg.from);
+
     if let Some(ref f) = msg.file {
         let size = human_size(f.size);
         if msg.data.is_empty() {
-            println!("[{}] {}: 📎 {} ({}) → {}", time_str, msg.from, f.name, size, f.path);
+            println!("[{}] {}: 📎 {} ({}) → {}", time_str, from, f.name, size, f.path);
         } else {
-            println!("[{}] {}: {} 📎 {} ({}) → {}", time_str, msg.from, msg.data, f.name, size, f.path);
+            println!("[{}] {}: {} 📎 {} ({}) → {}", time_str, from, msg.data, f.name, size, f.path);
         }
     } else {
-        println!("[{}] {}: {}", time_str, msg.from, msg.data);
+        println!("[{}] {}: {}", time_str, from, msg.data);
     }
+}
+
+/// Resolve a sender short ID to a display name.
+fn resolve_sender(from: &str) -> String {
+    let dir = daemon::talkd_dir();
+    // Check if it's our own ID
+    if let Ok(secret) = crypto::load_or_create_identity(&dir) {
+        if secret.public().fmt_short().to_string() == from {
+            return "you".to_string();
+        }
+    }
+    // Check contacts
+    let contacts = crypto::load_contacts(&dir);
+    for (name, c) in &contacts {
+        if c.id.fmt_short().to_string() == from {
+            return name.clone();
+        }
+    }
+    from.to_string()
 }
 
 fn human_size(bytes: usize) -> String {

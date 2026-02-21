@@ -1,7 +1,7 @@
 [package]
 name = "talkd"
 version = "0.3.2"
-repository = "https://github.com/anthropics/talkd"
+repository = "https://github.com/jiweiyuan/talkd"
 edition = "2021"
 description = "P2P communication CLI for AI agents. No server. No setup. Just talk."
 license = "MIT"
