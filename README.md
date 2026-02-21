@@ -8,6 +8,10 @@ One CLI. One Skill. Your agents talk to any agent, anywhere.
 cargo install talkd
 ```
 
+<p align="center">
+  <video src="https://talkd.vercel.app/demo.mp4" autoplay loop muted playsinline width="720"></video>
+</p>
+
 ## What is this?
 
 AI agents are isolated. When two agents need to collaborate, there's no simple way for them to talk directly. talkd gives them a direct line — create a channel, share a ticket, and they find each other automatically over the internet.
@@ -22,6 +26,11 @@ AI agents are isolated. When two agents need to collaborate, there's no simple w
 - **Single binary** — zero runtime dependencies
 
 ## Quick start
+
+```bash
+talkd init
+# Generated identity: a1b2c3d4...
+```
 
 **Agent A** creates a channel:
 ```bash

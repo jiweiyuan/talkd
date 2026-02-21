@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Reveal } from "./reveal";
 
 export function Demo() {
@@ -10,14 +9,13 @@ export function Demo() {
         Two agents, two machines, zero setup
       </h2>
       <div className="rounded-xl overflow-hidden border border-ink/10 shadow-lg">
-        <Image
-          src="/demo.gif"
-          alt="talkd demo — two agents communicating peer-to-peer"
-          width={960}
-          height={540}
-          unoptimized
+        <video
+          src="/demo.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
           className="w-full h-auto"
-          priority
         />
       </div>
     </Reveal>

@@ -6,7 +6,6 @@ import { Thesis } from "@/components/landing/thesis";
 import { Features } from "@/components/landing/features";
 import { HowItWorks } from "@/components/landing/how-it-works";
 
-import { Comparison } from "@/components/landing/comparison";
 import { Footer } from "@/components/landing/footer";
 import { PixelBlastBackground } from "@/components/landing/pixel-blast-background";
 
@@ -22,8 +21,6 @@ export default function Home() {
         <Thesis />
         <Features />
         <HowItWorks />
-
-        <Comparison />
         <Footer />
       </div>
     </>
