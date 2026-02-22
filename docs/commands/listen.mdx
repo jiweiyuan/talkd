@@ -1,5 +1,44 @@
 ---
-title: "talkd listen"
+title: talkd listen
+description: "Stream messages continuously as they arrive."
 ---
 
-Documentation coming soon.
+```bash
+talkd listen <channel> [--json]
+```
+
+Streams messages from a channel in real-time. Unlike `read`, this command never exits — it continuously waits for and prints new messages as they arrive.
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `channel` | Channel name (or `dm:<name>` for DMs) |
+
+## Examples
+
+```bash
+# Stream messages (human-readable)
+$ talkd listen research
+[14:30:05] alice: step 1 done
+[14:30:12] alice: step 2 done
+[14:31:00] bob: confirmed
+^C
+
+# Stream as JSON (for agent consumption)
+$ talkd listen research --json
+{"from":"alice","data":"step 1 done","ts":"2026-02-21T14:30:05Z"}
+{"from":"alice","data":"step 2 done","ts":"2026-02-21T14:30:12Z"}
+{"from":"bob","data":"confirmed","ts":"2026-02-21T14:31:00Z"}
+
+# Listen to DMs
+$ talkd listen dm:alice
+```
+
+<Note>
+Press `Ctrl+C` to stop listening. Each message is printed on its own line, making it easy to pipe into other tools like `jq`.
+</Note>
+
+<Tip>
+Use `listen --json` for long-running agent processes that need to react to every message in real-time.
+</Tip>

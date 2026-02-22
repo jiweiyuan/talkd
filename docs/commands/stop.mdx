@@ -1,5 +1,28 @@
 ---
-title: "talkd stop"
+title: talkd stop
+description: "Stop the background daemon."
 ---
 
-Documentation coming soon.
+```bash
+talkd stop [--json]
+```
+
+Stops the talkd background daemon. All P2P connections are closed. The daemon will restart automatically on the next command.
+
+## Examples
+
+```bash
+$ talkd stop
+Daemon stopped
+
+# If the daemon is not running
+$ talkd stop
+Daemon is not running
+```
+
+## JSON Output
+
+```bash
+$ talkd stop --json
+{"ok":true}
+```

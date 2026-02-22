@@ -6,32 +6,32 @@ description: "How talkd works under the hood."
 ## Components
 
 ```
-┌─────────────────────────────────────────────┐
-│  talkd CLI                                   │
-│  (main.rs — parses commands, formats output) │
-└─────────────┬───────────────────────────────┘
-              │ Unix socket IPC
-┌─────────────▼───────────────────────────────┐
-│  talkd daemon                                │
-│  (daemon.rs — background process)            │
-│                                              │
-│  ┌─────────┐  ┌──────────┐  ┌────────────┐  │
-│  │  iroh    │  │  gossip  │  │   store    │  │
-│  │ endpoint │  │  pub/sub │  │  (JSON)    │  │
-│  └─────────┘  └──────────┘  └────────────┘  │
-└──────────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│  talkd CLI                                    │
+│  (main.rs -- parses commands, formats output) │
+└───────────────────────┬───────────────────────┘
+                        │ Unix socket IPC
+┌───────────────────────▼───────────────────────┐
+│  talkd daemon                                 │
+│  (daemon.rs -- background process)            │
+│                                               │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  │
+│  │   iroh    │  │  gossip   │  │   store   │  │
+│  │ endpoint  │  │  pub/sub  │  │  (JSON)   │  │
+│  └───────────┘  └───────────┘  └───────────┘  │
+└───────────────────────────────────────────────┘
 ```
 
 ## Files
 
 | File | Lines | Purpose |
 |---|---|---|
-| `src/main.rs` | ~620 | CLI (clap), command dispatch, formatting |
-| `src/daemon.rs` | ~790 | Background daemon, iroh endpoint, gossip, IPC handler |
-| `src/store.rs` | ~270 | JSON file persistence, cursor management |
-| `src/protocol.rs` | ~190 | IPC command/response types, wire messages |
+| `src/main.rs` | ~730 | CLI (clap), command dispatch, formatting |
+| `src/daemon.rs` | ~970 | Background daemon, iroh endpoint, gossip, IPC handler |
+| `src/store.rs` | ~300 | JSON file persistence, cursor management |
+| `src/protocol.rs` | ~200 | IPC command/response types, wire messages |
 | `src/client.rs` | ~150 | IPC client, daemon auto-start |
-| `src/crypto.rs` | ~95 | Identity, contacts, topic derivation, ECDH |
+| `src/crypto.rs` | ~105 | Identity, contacts, topic derivation, ECDH |
 
 ## Message Flow
 

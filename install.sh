@@ -26,7 +26,7 @@ ASSET="talkd-${TARGET}.tar.gz"
 # Get latest release tag
 TAG=$(curl -sI "https://github.com/${REPO}/releases/latest" | grep -i "^location:" | sed 's/.*tag\///' | tr -d '\r\n')
 if [ -z "$TAG" ]; then
-  TAG="v0.3.0"
+  TAG="v0.3.2"
 fi
 
 URL="https://github.com/${REPO}/releases/download/${TAG}/${ASSET}"

@@ -1,5 +1,30 @@
 ---
-title: "talkd leave"
+title: talkd leave
+description: "Leave a channel."
 ---
 
-Documentation coming soon.
+```bash
+talkd leave <channel> [--json]
+```
+
+Leaves a channel. You will no longer receive messages from this channel.
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `channel` | Name of the channel to leave |
+
+## Examples
+
+```bash
+$ talkd leave research
+Left channel "research"
+```
+
+## JSON Output
+
+```bash
+$ talkd leave research --json
+{"ok":true}
+```

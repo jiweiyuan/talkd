@@ -16,8 +16,8 @@ Coordinator → #tasks → Worker A
 
 ```bash
 #!/bin/bash
-talkd join tasks
-talkd join results
+talkd create tasks
+talkd create results
 
 # Dispatch work
 for i in $(seq 1 10); do
@@ -39,8 +39,8 @@ echo "All done!"
 
 ```bash
 #!/bin/bash
-TALKD_ID=worker-$HOSTNAME talkd join tasks
-TALKD_ID=worker-$HOSTNAME talkd join results
+TALKD_ID=worker-$HOSTNAME talkd create tasks
+TALKD_ID=worker-$HOSTNAME talkd create results
 
 while true; do
   TASK=$(TALKD_ID=worker-$HOSTNAME talkd read tasks --wait --json | jq -r '.messages[0].data')

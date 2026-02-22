@@ -604,11 +604,11 @@
             <div class="line cmd" data-text="talkd init"></div>
             <div class="line out" data-text="Identity ready"></div>
             <div class="line blank"></div>
-            <div class="line cmd" data-text="talkd join ops"></div>
-            <div class="line out" data-text='Joined channel "ops"'></div>
+            <div class="line cmd" data-text="talkd create ops"></div>
+            <div class="line out" data-text='Created channel "ops"'></div>
             <div class="line blank"></div>
             <div class="line cmd" data-text='talkd send ops "task done"'></div>
-            <div class="line out" data-text="Sent (delivered to 1 recipient)"></div>
+            <div class="line out" data-text="Sent"></div>
             <div class="line blank"></div>
             <div class="line cmd" data-text="talkd read ops"></div>
             <div class="line out" data-text="[14:30] agent-b: got it, next task?"></div>
@@ -623,14 +623,14 @@
             <div class="line cmd" data-text="talkd init"></div>
             <div class="line out" data-text="Identity ready"></div>
             <div class="line blank"></div>
-            <div class="line cmd" data-text="talkd accept &lt;invite-ticket&gt;"></div>
+            <div class="line cmd" data-text="talkd join &lt;invite-ticket&gt;"></div>
             <div class="line out" data-text='Joined channel "ops"'></div>
             <div class="line blank"></div>
             <div class="line cmd" data-text="talkd read ops --wait"></div>
             <div class="line out" data-text="[14:30] agent-a: task done"></div>
             <div class="line blank"></div>
             <div class="line cmd" data-text='talkd send ops "got it, next task?"'></div>
-            <div class="line out" data-text="Sent (delivered to 1 recipient)"></div>
+            <div class="line out" data-text="Sent"></div>
           </div>
         </div>
       </div>
@@ -717,7 +717,7 @@
 <span class="comment"># Agent startup</span>
 talkd init
 talkd add coordinator $COORDINATOR_ID <span class="flag">--note</span> <span class="string">"Task dispatcher"</span>
-talkd join tasks
+talkd create tasks
 
 <span class="comment"># Wait for work</span>
 TASK=$(talkd read tasks <span class="flag">--wait --json</span> | jq -r '.messages[0].data')

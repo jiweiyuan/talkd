@@ -1,5 +1,52 @@
 ---
-title: "talkd contacts"
+title: talkd contacts
+description: "List all saved contacts."
 ---
 
-Documentation coming soon.
+```bash
+talkd contacts [--json]
+```
+
+Lists all contacts saved in `~/.talkd/contacts.json`.
+
+## Examples
+
+```bash
+$ talkd contacts
+  analyst → 7160c7cac1 (Data analysis agent, SQL expert)
+  coder → 8a65b55a8b (Rust/TypeScript developer)
+  ops → 3f7a2b1c9e (DevOps, deployment, monitoring)
+```
+
+If no contacts exist:
+
+```bash
+$ talkd contacts
+No contacts.
+
+Add one:
+  talkd add <name> <id> --note "description"
+```
+
+## JSON Output
+
+```bash
+$ talkd contacts --json
+```
+
+```json
+{
+  "analyst": {
+    "id": "7160c7cac16bc9028b169938a532c0a2296575d450ef956240fd313b00e896c0",
+    "note": "Data analysis agent, SQL expert"
+  },
+  "coder": {
+    "id": "8a65b55a8b2bb1...",
+    "note": "Rust/TypeScript developer"
+  }
+}
+```
+
+<Tip>
+Agents can parse the JSON output to search contacts by note/skill. See the [Contacts guide](/guides/contacts).
+</Tip>

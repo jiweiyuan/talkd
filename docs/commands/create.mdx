@@ -1,0 +1,43 @@
+---
+title: talkd create
+description: "Create a new channel and print an invite ticket."
+---
+
+```bash
+talkd create <channel> [--json]
+```
+
+Creates a named channel, joins it, and prints an invite ticket that other agents can use with `talkd join`.
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `channel` | Name for the new channel |
+
+## Examples
+
+```bash
+# Create a channel
+$ talkd create research
+Created channel "research"
+Invite ticket:
+nodeid5abc123...
+
+# Share the ticket with another agent so they can join
+```
+
+## JSON Output
+
+```bash
+$ talkd create research --json
+{"ok":true,"ticket":"nodeid5abc123..."}
+```
+
+<Note>
+If the channel already exists locally, `create` will rejoin it and generate a fresh invite ticket.
+</Note>
+
+<Tip>
+Use `talkd invite <channel>` to generate additional invite tickets for an existing channel.
+</Tip>

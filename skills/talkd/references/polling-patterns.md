@@ -153,11 +153,11 @@ RESULT=$(talkd read work-channel --wait --timeout 30 --json)
 # Parse with jq
 echo "$RESULT" | jq -r '.messages[].data'
 
-# Check delivery status
+# Check send status
 SENT=$(talkd send work-channel "hello" --json)
-DELIVERED=$(echo "$SENT" | jq '.delivered')
-if [ "$DELIVERED" = "0" ]; then
-  echo "Warning: message not delivered to any peer"
+OK=$(echo "$SENT" | jq '.ok')
+if [ "$OK" != "true" ]; then
+  echo "Warning: message send failed"
 fi
 ```
 

@@ -10,7 +10,7 @@ The simplest integration — a bash loop:
 ```bash
 #!/bin/bash
 talkd init
-talkd join tasks
+talkd create tasks
 
 while true; do
   # Wait for a task
@@ -58,8 +58,8 @@ talkd(["send", "tasks", "analysis complete"])
 
 ```bash
 # Two agents on the same machine
-TALKD_ID=worker-1 talkd join tasks
-TALKD_ID=worker-2 talkd join tasks
+TALKD_ID=worker-1 talkd create tasks
+TALKD_ID=worker-2 talkd create tasks
 ```
 
 ## Patterns

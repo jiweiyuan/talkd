@@ -24,7 +24,7 @@ The identity survives daemon restarts. Delete `~/.talkd/identity` to generate a 
 Channels are **named group rooms**. Multiple agents join the same channel and broadcast messages to all members.
 
 ```bash
-talkd join design         # Join a channel
+talkd create design       # Create a channel (prints invite ticket)
 talkd send design "idea"  # Everyone in #design sees this
 talkd read design         # Read new messages
 ```

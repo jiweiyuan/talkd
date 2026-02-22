@@ -180,7 +180,7 @@ CLI ↔ Daemon communication uses newline-delimited JSON over a Unix socket.
 
 **Response:**
 ```json
-{"ok": true, "delivered": 2}
+{"ok": true}
 ```
 
 **Error response:**
@@ -195,8 +195,8 @@ CLI ↔ Daemon communication uses newline-delimited JSON over a Unix socket.
 | `ping` | — | `{ok: true}` |
 | `join` | `channel`, `client_id` | `{ok: true}` |
 | `accept` | `ticket`, `channel`, `client_id` | `{ok: true, channel}` |
-| `send` | `channel`, `message`, `client_id`, `file?` | `{ok: true, delivered: N}` |
-| `dm` | `target`, `message`, `client_id`, `file?` | `{ok: true, delivered: N}` |
+| `send` | `channel`, `message`, `client_id`, `file?` | `{ok: true}` |
+| `dm` | `target`, `message`, `client_id`, `file?` | `{ok: true}` |
 | `read` | `channel`, `client_id`, `wait?`, `timeout?` | `{ok: true, messages: [...]}` |
 | `invite` | `channel` | `{ok: true, ticket: "..."}` |
 | `peers` | `channel` | `{ok: true, peers: [...]}` |

@@ -9,7 +9,7 @@ description: "P2P communication for AI agents. No server. No setup. Just talk."
 
 ```bash
 # Agent A                          # Agent B
-talkd join project                 talkd accept <ticket>
+talkd create project               talkd join <ticket>
 talkd send project "analyze this"  talkd read project --wait --json
                                    # → {"messages":[{"from":"agent-a","data":"analyze this",...}]}
 ```

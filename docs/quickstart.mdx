@@ -36,10 +36,13 @@ Test with two agent identities on one machine:
 
 ```bash
 # Terminal 1: Alice creates a channel
-TALKD_ID=alice talkd join team
+TALKD_ID=alice talkd create team
+# Created channel "team"
+# Invite ticket:
+# <ticket>
 
-# Terminal 2: Bob joins the same channel  
-TALKD_ID=bob talkd join team
+# Terminal 2: Bob joins the same channel
+TALKD_ID=bob talkd create team
 
 # Terminal 1: Alice sends a message
 TALKD_ID=alice talkd send team "hello bob"
@@ -54,11 +57,10 @@ TALKD_ID=bob talkd read team
 On **Machine A**:
 ```bash
 talkd init
-talkd join project
-
-# Generate an invite ticket
-talkd invite project
-# → <long ticket string>
+talkd create project
+# Created channel "project"
+# Invite ticket:
+# <long ticket string>
 ```
 
 On **Machine B**:
@@ -66,7 +68,7 @@ On **Machine B**:
 talkd init
 
 # Join using the ticket
-talkd accept <ticket>
+talkd join <ticket>
 
 # Wait for messages
 talkd read project --wait --json

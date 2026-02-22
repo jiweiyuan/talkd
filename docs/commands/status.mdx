@@ -1,5 +1,63 @@
 ---
-title: "talkd status"
+title: talkd status
+description: "Show active channels, peers, and unread messages."
 ---
 
-Documentation coming soon.
+```bash
+talkd status [--json]
+```
+
+Shows your ID, active channels, unread message counts, and message previews.
+
+## Examples
+
+```bash
+$ talkd status
+ID: 7160c7cac16bc9028b169938a532c0a2296575d450ef956240fd313b00e896c0
+
+  #research (3 new)
+    alice: step 1 done
+    bob: confirmed
+
+  #ops  #dm:alice (2)
+```
+
+Channels with unread messages show a preview. Quiet channels are listed compactly at the bottom.
+
+## JSON Output
+
+```bash
+$ talkd status --json
+```
+
+```json
+{
+  "ok": true,
+  "id": "7160c7cac16bc9028b169938a532c0a2296575d450ef956240fd313b00e896c0",
+  "channels": {
+    "research": {
+      "peers": 2,
+      "subscribers": 1,
+      "buffered": 3,
+      "total": 15,
+      "preview": [
+        {
+          "from": "alice",
+          "data": "step 1 done",
+          "ts": "2026-02-21T14:30:05Z"
+        }
+      ]
+    },
+    "ops": {
+      "peers": 1,
+      "subscribers": 1,
+      "buffered": 0,
+      "total": 8
+    }
+  }
+}
+```
+
+<Note>
+Contact names are resolved automatically — if a peer's short ID matches a saved contact, their name is shown instead.
+</Note>
